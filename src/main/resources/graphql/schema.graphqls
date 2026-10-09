@@ -1,0 +1,82 @@
+# Contract of kubsei-editor. Auth and users live in kubsei-users (REST, see kubsei-users-lib).
+scalar JSON
+scalar DateTime
+
+# ============ TYPES ============
+type Project {
+    id: ID!
+    userId: ID!
+    name: String!
+    isPublic: Boolean!
+    canvas: Canvas!
+    elements: JSON
+    layers: [Layer!]!
+    thumbnail: String
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Canvas {
+    width: Int!
+    height: Int!
+    zoom: Float!
+    offsetX: Float!
+    offsetY: Float!
+}
+
+type Layer {
+    id: ID!
+    name: String!
+    visible: Boolean!
+    locked: Boolean!
+    opacity: Float!
+    elements: [String!]!
+}
+
+# ============ QUERIES ============
+type Query {
+    projects: [Project!]!
+    project(id: ID!): Project
+}
+
+# ============ MUTATIONS ============
+type Mutation {
+    createProject(input: CreateProjectInput!): Project!
+    updateProject(id: ID!, input: UpdateProjectInput!): Project!
+    deleteProject(id: ID!): Boolean!
+    saveProjectState(id: ID!, state: ProjectStateInput!): Project!
+    setProjectVisibility(id: ID!, isPublic: Boolean!): Project!
+}
+
+# ============ INPUTS ============
+input CreateProjectInput {
+    name: String!
+    canvas: CanvasInput
+}
+
+input UpdateProjectInput {
+    name: String
+}
+
+input CanvasInput {
+    width: Int
+    height: Int
+    zoom: Float
+    offsetX: Float
+    offsetY: Float
+}
+
+input LayerInput {
+    id: String!
+    name: String!
+    visible: Boolean!
+    locked: Boolean!
+    opacity: Float!
+    elements: [String!]!
+}
+
+input ProjectStateInput {
+    canvas: CanvasInput!
+    elements: JSON!
+    layers: [LayerInput!]!
+}
